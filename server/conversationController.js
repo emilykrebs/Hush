@@ -9,7 +9,6 @@ const ConversationController = {
   
    const {sender, recipient} = req.body;
    let result;
-
   //  const dummyMessages = [{"sender": sender, "recipient" : recipient, text: "hey matt, I got you some tacos", timestamp: "10:00PM"},
   //  {"sender": sender, "recipient" : recipient, text: "wow no way, thanks a lot", timestamp: "10:05PM"},
   //  {"sender": recipient, "recipient" : sender, text: "no problem matt", timestamp: "10:06PM"},
@@ -17,9 +16,8 @@ const ConversationController = {
   //  {"sender": recipient, "recipient" : sender, text: "love you too", timestamp: "10:08PM"},]
 
    
-   Conversation.find({participants : {name: sender} }) //returns an array with all convos matt has 
+   Conversation.find({participants : {name: sender} }) //returns an array with all convos that the current user has 
    .then(allConvosWithSender => {
-    
      if (allConvosWithSender.length === 0){ //the sender has no convos with anyone
        Conversation.create({_id: mongoose.Types.ObjectId() , participants: [{name: sender}, {name: recipient}], messages: []})
        .then( (mongoResult) => {
@@ -32,11 +30,14 @@ const ConversationController = {
        })
      }
 
+    //  Conversation.find
+
      for (let indivConvo = 0; indivConvo < allConvosWithSender.length; indivConvo ++){
        
        for (let convoParticipants = 0; convoParticipants < allConvosWithSender[indivConvo].participants.length; convoParticipants ++){
-          let currentRecipient = allConvosWithSender[indivConvo].participants[convoParticipants].name 
+          let currentRecipient = allConvosWithSender[indivConvo].participants[convoParticipants].name
           // Save current recipient convo to local
+          
           if (recipient === currentRecipient){
             result = allConvosWithSender[indivConvo];
             res.locals.convoId = result._id
@@ -62,7 +63,6 @@ const ConversationController = {
 
   getAllConvosForAUser (req, res, next) {
     const { username } = req.body; 
-    
     Conversation.find({participants: { name: username } })
     .then( (mongoResult) => {
       if (mongoResult.length === 0){
