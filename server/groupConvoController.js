@@ -20,52 +20,37 @@ const GroupConversationController = {
    // still have front end send sender object 
    const {sender, recipients} = req.body;
    const participants = [{name: sender}];
+
    recipients.map((participant) => {
       participants.push({name: participant})
-   })
-   let result;
+   });
    
-   Conversation.find({participants : {name: sender}}) //returns an array with all group convos user has
+   Conversation.findOne({ participants : participants }) //returns an array with all group convos user has
    .then(allGroupConvosWithSender => {
-    
-     if (allGroupConvosWithSender.length === 0){ //the sender has no convos with anyone
-       Conversation.create({_id: mongoose.Types.ObjectId() , participants: participants, messages: []})
-       .then( (mongoResult) => {
-         //should return us back an obj = {_id: 24vergverb, participants: [], messages: []}
-         res.locals.convoId = mongoResult._id;
-         res.locals.status = 200;
-         res.locals.messages = mongoResult.messages;
-         console.log('created a convo on line 30')
-         return next();
+        console.log(allGroupConvosWithSender, 'ALL GROUP CONVOS')
+        if (allGroupConvosWithSender) {
+          res.locals.status = 200;
+          res.locals.convoId = allGroupConvosWithSender._id;
+          res.locals.messages = allGroupConvosWithSender.messages;
+          return next();
+        } else {
+         Conversation.create({_id: mongoose.Types.ObjectId() , participants: participants, messages: []})
+         .then((mongoResult) => {
+             //should return us back an obj = {_id: 24vergverb, participants: [], messages: []}
+             res.locals.convoId = mongoResult._id;
+             res.locals.status = 200;
+             res.locals.messages = mongoResult.messages;
+             return next();
+           })
+           .then(err => {
+             console.log(`Error creating group convo: ${err}`)
+           })
+         }
        })
-     }
-
-     for (let indivConvo = 0; indivConvo < allGroupConvosWithSender.length; indivConvo ++){
-       
-       for (let groupConvoParticipants = 0; groupConvoParticipants < allGroupConvosWithSender[indivConvo].participants.length; groupConvoParticipants ++){
-          let currentParticipant = allGroupConvosWithSender[indivConvo].participants[groupConvoParticipants].name 
-          // Save current recipient convo to local
-          if (recipients[groupConvoParticipants] === currentParticipant) {
-            result = allGroupConvosWithSender[indivConvo];
-            res.locals.convoId = result._id
-            res.locals.messages = result.messages;
-            res.locals.status = 200;
-            return next();
-          }
-       }
-     }
-
-     /*if we make it here, we have iterated thru all of our senders convos, and have not found a conversation
-     where the recipient is there. */
-     /* creat conveo */
-     Conversation.create({_id: mongoose.Types.ObjectId() ,participants: participants, messages: []})
-     .then( (mongoResult) => {
-      res.locals.convoId = mongoResult._id
-      res.locals.messages = mongoResult.messages;
-      res.locals.status = 200;
-      return next();
-      })
-    })
+       .catch(err => {
+        console.log(`Error locating group convo: ${err}`);
+        return next()
+       });
   },
 
   getAllGroupConvosForAUser (req, res, next) {
@@ -78,7 +63,13 @@ const GroupConversationController = {
         res.locals.status = 204;
         return next();
       } else {
-        res.locals.conversations = mongoResult;
+        const conversations = [];
+        mongoResult.forEach(convo => {
+          if (convo.participants.length > 2) {
+            conversations.push(convo);
+          };
+        });
+        res.locals.conversations = conversations;
         res.locals.status = 200;
         return next();
       }
@@ -92,4 +83,4 @@ const GroupConversationController = {
 
 
 
-module.exports = ConversationController;
+module.exports = GroupConversationController;
