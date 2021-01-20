@@ -68,22 +68,22 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email })
+        body: JSON.stringify({ sender: email, recipients: ['ericpeng@eric.com', 'g@rrett.com' ] })
       };
 
-      fetch('/groupchat/groupuserconvos', requestOptions)
+      fetch('/groupchat/groupconvo', requestOptions)
       .then(res => res.json())
       .then(response => {
-        console.log(response.conversations, 'BASIC RESPONSE')
-        const allGroupActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
-        const filteredGroupActiveConvos = [];
-        allGroupActiveConvos.forEach(convo => {
-          if (!filteredGroupActiveConvos.includes(convo[0].name) && convo[0].name) {
-            filteredGroupActiveConvos.push(convo[0].name);
-          }
-        });
-        setActiveGroupConversations(filteredGroupActiveConvos);   
-      })
+        console.log(response.conversation, 'BASIC RESPONSE')
+        // const allGroupActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
+        // const filteredGroupActiveConvos = [];
+        // allGroupActiveConvos.forEach(convo => {
+        //   if (!filteredGroupActiveConvos.includes(convo[0].name) && convo[0].name) {
+        //     filteredGroupActiveConvos.push(convo[0].name);
+        //   }
+        })
+        // setActiveGroupConversations(filteredGroupActiveConvos);   
+      // })
       .catch(err => {
         console.log(`There was an error: ${err}`)
       })

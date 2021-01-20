@@ -8,6 +8,7 @@ const CryptoJS = require("crypto-js");
 
 const userRouter = require('./userRouter');
 const conversationRouter = require('./conversationRouter');
+const groupConvoRouter = require('./groupConvoRouter');
 
 const PORT = 3000;
 
@@ -38,7 +39,7 @@ app.use('/user', userRouter);
 //Conversation router ---------
 app.use('/chat', conversationRouter);
 
-// app.use('/groupchat', groupConvoRouter);
+app.use('/groupchat', groupConvoRouter);
 /**
  * Global error handler
  **/
