@@ -41,7 +41,7 @@ const Signup = ({ signup, history, open, handleSignupClose }) => {
         const response = await request.json();
         if (response.created) {
           // Set state in redux store to logged in
-          signup(email.value);
+          signup({ email: email.value, displayName: response.name });
           history.push('/dashboard');
         } else {
           setErrorMessage(errorMessages[status.toString()]);

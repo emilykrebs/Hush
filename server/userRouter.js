@@ -6,7 +6,7 @@ const userRouter = express.Router();
 userRouter.post('/create',
   userController.createUser,
   (req, res) => {
-    res.status(res.locals.status).json({created : res.locals.created, username : res.locals.username});
+    res.status(res.locals.status).json({created : res.locals.created, username : res.locals.username, name: res.locals.name });
   });
 
 
@@ -21,7 +21,7 @@ userRouter.post('/getUsers',
 userRouter.post('/verify',
   userController.verifyUser,
   (req, res) => {
-    res.status(res.locals.status).json({verified: res.locals.verified});
+    res.status(res.locals.status).json({verified: res.locals.verified, name: res.locals.name});
   }
 );
 

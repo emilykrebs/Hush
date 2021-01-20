@@ -7,7 +7,7 @@ import UserDetails from './UserDetails.jsx';
 /**
  * Renders Sidepanel, including current user details, user search bar, & active conversations
  */
-const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setActiveConversations, activeConversations, activeChat }) => {
+const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setActiveConversations, activeConversations, activeChat, username }) => {
 
   /**
    * Set state
@@ -25,7 +25,7 @@ const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setA
 
   return (
     <Container onClick={handleClick}>
-      <UserDetails email={email} />
+      <UserDetails email={email} username={username} />
       <SearchBar 
         open={open} 
         handleClick={handleClick} 

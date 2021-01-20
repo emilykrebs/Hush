@@ -22,5 +22,6 @@ export const Dashboard_Container = connect(state => ({
   email: state.user.email,
   activesLoaded: state.user.activesLoaded,
   activeRecipient: state.user.activeRecipient,
-  clientSocket: state.user.clientSocket
+  clientSocket: state.user.clientSocket,
+  username: state.user.username,
 }), mapDispatchToProps)(Dashboard);

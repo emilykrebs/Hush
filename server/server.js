@@ -23,6 +23,7 @@ app.get('/login', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../client/index.html'));
 });
 
+
 const server = app.listen(PORT, () => {console.log(`listening on ${PORT} `);});
 
 //User router ---------

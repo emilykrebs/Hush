@@ -36,6 +36,7 @@ userController.createUser = (req, res, next) => {
       console.log('user created');
       res.locals.created = true;
       res.locals.username = username;
+      res.locals.name = name;
       res.locals.status = 200;
       next();
     })
@@ -59,6 +60,7 @@ userController.verifyUser = (req, res, next) => {
         if (bcrypt.compareSync(password, mongoRes._doc.password)){
           res.locals.verified = true; 
           res.locals.status = 200;
+          res.locals.name = mongoRes.name;
         } else {
           res.locals.verified = false;
           res.locals.status = 202;

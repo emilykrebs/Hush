@@ -108,8 +108,7 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
         const response = await request.json();
         if (response.verified) {
           // Set state in redux store to logged in
-          console.log(email.value);
-          login(email.value);
+          login({ email: email.value, displayName: response.name });
           connectToSocket();
           defineMe(email.value);
           listenForMessage();
