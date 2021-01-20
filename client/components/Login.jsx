@@ -111,7 +111,7 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
         const response = await request.json();
         if (response.verified) {
           // Set state in redux store to logged in
-          login(email.value);
+          login({ email: email.value, displayName: response.name });
           connectToSocket();
           console.log('confirm email after socket connection', email.value)
           defineMe(email.value);

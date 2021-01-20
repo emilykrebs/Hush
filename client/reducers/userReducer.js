@@ -21,7 +21,8 @@ const userReducer = (state = initialState, action) => {
     return {
       ...state,
       loggedIn: true,
-      email: action.payload
+      email: action.payload.email,
+      username: action.payload.displayName,
     };
   }
 
@@ -30,7 +31,8 @@ const userReducer = (state = initialState, action) => {
     return {
       ...state,
       loggedIn: true,
-      email: action.payload
+      email: action.payload.email,
+      username: action.payload.displayName,
     };
   }
 

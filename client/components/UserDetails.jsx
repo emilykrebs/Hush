@@ -6,11 +6,11 @@ import styled from 'styled-components';
  * avatar & username
  */
 
-const UserDetails = ({ email }) => {
+const UserDetails = ({ email, username }) => {
   return (
     <Container>
       <Avatar />
-      <User>{email}</User>
+      <User>{username}</User>
     </Container>
   );
 };
