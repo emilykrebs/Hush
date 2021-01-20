@@ -34,6 +34,11 @@ export const setActiveConversations = (activeConversationPayload) => ({
   payload: activeConversationPayload
 });
 
+export const setActiveGroupConversations = (activeGroupConversationPayload) => ({
+  type: types.SET_ACTIVE_GROUP_CONVERSATIONS,
+  payload: activeGroupConversationPayload,
+});
+
 export const setClientSocket = (socketPayload) => ({
   type: types.SET_CLIENT_SOCKET,
   payload: socketPayload

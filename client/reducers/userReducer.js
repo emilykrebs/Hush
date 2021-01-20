@@ -9,6 +9,7 @@ const initialState = {
   activeRecipient: '',
   activeChat: {cid: '', conversation: []},
   activeConversations: [],
+  activeGroupConversations: [],
   activesLoaded: false,
   clientSocket: {}
 };
@@ -73,6 +74,14 @@ const userReducer = (state = initialState, action) => {
     return {
       ...state,
       activeConversations: action.payload
+    };
+  }
+
+  // adds new group conversation to active group conversations
+  case types.SET_ACTIVE_GROUP_CONVERSATIONS: {
+    return {
+      ...state,
+      activeGroupConversations: action.payload,
     };
   }
 

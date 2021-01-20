@@ -1,72 +1,93 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 /**
  * Renders active conversations to sidepanel
  */
 
-const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email }) => {
+const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email, 
+                        activeGroupConversations, setActiveGroupConversations }) => {
 
   /**
    * Set state
    * directOpen determines whether to expand or hide active direct messages - passed as prop to styled component and changes display based on value
    * groupOpen  determines whether to expand or hide active group messages - passed as prop to styled component and changes display based on value
    */
-  const [directOpen, setDirectOpen] = useState(true);
+  const [directOpen, setDirectOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
+  const [newGroup, setNewGroup] = useState(false);
   const [conversationSelected, setConversationSelected] = useState(false);
+ 
 
-
-
+  // Handles click of direct caret &
   // Make request for all active conversations
 
-  useEffect(() => {
-    (async () => {
+  const handleDirectClick = (e) => {
+    if (directOpen) setDirectOpen(false);
+    else {
+      setDirectOpen(true);
+
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email })
       };
 
-      try {
-        const request = await fetch('/chat/userconvos', requestOptions);
-        const response = await request.json();
+      // update list of users who have an active conversation with logged-in user
+      // conversation list query returns both users attached to a conversation
+      // filter out user name of logged in user to display only recipient email
 
-        // update list of users who have an active conversation with logged-in user
-
-        setActiveConversations(
-          response.conversations.map(convo => {
-
-            // conversation list query returns both users attached to a conversation
-            // filter out user name of logged in user to display only recipient email
-            const noDuplicatesArr = [];
-            const temp = convo.participants.filter(user => {
-              if (user.name !== email && !noDuplicatesArr.includes(user.name)) {
-                noDuplicatesArr.push(user.name);
-                return user.name;
-              }
-            });
-            return temp[0].name;
-          })
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    })();
-  }, []);
-
-  // handles click of direct caret
-
-  const handleDirectClick = (e) => {
-    if (directOpen) setDirectOpen(false);
-    else setDirectOpen(true);
+      fetch('/chat/userconvos', requestOptions)
+      .then(res => res.json())
+      .then(response => {
+        console.log(response.conversations, 'BASIC RESPONSE')
+        const allActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
+        const filteredActiveConvos = [];
+        console.log('ALL ACTIVE CONVOS', allActiveConvos)
+        allActiveConvos.forEach(convo => {
+          if (!filteredActiveConvos.includes(convo[0].name) && convo[0].name) {
+            filteredActiveConvos.push(convo[0].name);
+          }
+        });
+        setActiveConversations(filteredActiveConvos);   
+      })
+      .catch(err => {
+        console.log(`There was an error: ${err}`)
+      })
+    }
   };
 
-  // handles click of group caret
+  // Handles click of group caret &
+  // Make request for all active  GROUP conversations
 
   const handleGroupClick = (e) => {
     if (groupOpen) setGroupOpen(false);
-    else setGroupOpen(true);
+    else {
+      setGroupOpen(true)
+
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email })
+      };
+
+      fetch('/groupchat/groupuserconvos', requestOptions)
+      .then(res => res.json())
+      .then(response => {
+        console.log(response.conversations, 'BASIC RESPONSE')
+        const allGroupActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
+        const filteredGroupActiveConvos = [];
+        allGroupActiveConvos.forEach(convo => {
+          if (!filteredGroupActiveConvos.includes(convo[0].name) && convo[0].name) {
+            filteredGroupActiveConvos.push(convo[0].name);
+          }
+        });
+        setActiveGroupConversations(filteredGroupActiveConvos);   
+      })
+      .catch(err => {
+        console.log(`There was an error: ${err}`)
+      })
+    };
   };
 
   // request chat log info for selected user
@@ -98,6 +119,23 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       console.log(err);
     }
   };
+
+  const handleGroupUserClick = (e) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sender: email,
+        recipient: e.target.innerText
+      })
+    };
+    console.log('HANDLE GROUP USER CLICK')
+  }
+
+  const handleNewGroupClick = (e) => {
+    if (newGroup) setNewGroup(false);
+    else setNewGroup(true);
+  }
 
   return (
     <Container>
@@ -131,7 +169,22 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
           </GroupCaret>
         </li>
         <InnerList open={groupOpen} >
-          <Group>Ian, Ross & Wei</Group>
+          {activeGroupConversations.map((user, i) => (
+            <Group
+            key={`${user}${i}`}
+            email={user}
+            onClick={(e) => handleGroupUserClick(e)}
+            >
+            </Group>
+          ))}
+        </InnerList>
+        <li>
+          <NewGroup onClick={(e) => handleNewGroupClick(e)}>
+             New Group Chat
+          </NewGroup>
+        </li>
+        <InnerList open={newGroup}>
+          <input type='text' placeholder='Search users...'  width='70%'/>
         </InnerList>
       </Ul>
     </Container>
@@ -198,9 +251,27 @@ const Group = styled(Direct)`
 
 `;
 
+const NewGroup = styled(DirectCaret)`
+
+`;
+
 const Header = styled.h3`
   height: fit-content;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
+`;
+
+const GroupChat = styled.li`
+  z-index: 0;
+  cursor: pointer;
+  user-select: none;
+
+  &:before {
+    font-family: times-new-roman;
+    content: "\\005E";
+    color: black;
+    display: inline-block;
+    padding: .5rem;
+  }
 `;

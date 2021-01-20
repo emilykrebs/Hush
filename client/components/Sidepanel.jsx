@@ -7,7 +7,8 @@ import UserDetails from './UserDetails.jsx';
 /**
  * Renders Sidepanel, including current user details, user search bar, & active conversations
  */
-const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setActiveConversations, activeConversations, activeChat, username }) => {
+const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setActiveConversations, 
+                      activeConversations, activeChat, username, setActiveGroupConversations, activeGroupConversations }) => {
 
   /**
    * Set state
@@ -40,7 +41,9 @@ const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setA
         setActivesLoaded={setActivesLoaded} 
         setActiveChat={setActiveChat} 
         setActiveConversations={setActiveConversations} 
-        activeConversations={activeConversations} 
+        activeConversations={activeConversations}
+        activeGroupConversations={activeGroupConversations}
+        setActiveGroupConversations={setActiveGroupConversations} 
       />
     </Container>
   );
