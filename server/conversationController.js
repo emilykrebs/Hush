@@ -6,7 +6,6 @@ const ConversationController = {
   findConversation(req, res, next) {
     //here we will be getting an obejct with {sender: 'Matt', recipiant: 'Ross'}
 
-<<<<<<< HEAD
     const { sender, recipient } = req.body;
     let result;
 
@@ -27,46 +26,6 @@ const ConversationController = {
           }).then((mongoResult) => {
             //should return us back an obj = {_id: 24vergverb, participants: [], messages: []}
             res.locals.convoId = mongoResult._id;
-=======
-  findConversation (req, res, next) {
-   //here we will be getting an obejct with {sender: 'Matt', recipiant: 'Ross'}
-  
-   const {sender, recipient} = req.body;
-   let result;
-  //  const dummyMessages = [{"sender": sender, "recipient" : recipient, text: "hey matt, I got you some tacos", timestamp: "10:00PM"},
-  //  {"sender": sender, "recipient" : recipient, text: "wow no way, thanks a lot", timestamp: "10:05PM"},
-  //  {"sender": recipient, "recipient" : sender, text: "no problem matt", timestamp: "10:06PM"},
-  //  {"sender": sender, "recipient" : recipient, text: "youre my bff<3", timestamp: "10:07PM"},
-  //  {"sender": recipient, "recipient" : sender, text: "love you too", timestamp: "10:08PM"},]
-
-   
-   Conversation.find({participants : {name: sender} }) //returns an array with all convos that the current user has 
-   .then(allConvosWithSender => {
-     if (allConvosWithSender.length === 0){ //the sender has no convos with anyone
-       Conversation.create({_id: mongoose.Types.ObjectId() , participants: [{name: sender}, {name: recipient}], messages: []})
-       .then( (mongoResult) => {
-         //should return us back an obj = {_id: 24vergverb, participants: [], messages: []}
-         res.locals.convoId = mongoResult._id;
-         res.locals.status = 200;
-         res.locals.messages = mongoResult.messages;
-         console.log('created a convo on line 30')
-         return next();
-       })
-     }
-
-    //  Conversation.find
-
-     for (let indivConvo = 0; indivConvo < allConvosWithSender.length; indivConvo ++){
-       
-       for (let convoParticipants = 0; convoParticipants < allConvosWithSender[indivConvo].participants.length; convoParticipants ++){
-          let currentRecipient = allConvosWithSender[indivConvo].participants[convoParticipants].name
-          // Save current recipient convo to local
-          
-          if (recipient === currentRecipient){
-            result = allConvosWithSender[indivConvo];
-            res.locals.convoId = result._id
-            res.locals.messages = result.messages;
->>>>>>> 1d7211839957778975f3723e8386092b7708fd2a
             res.locals.status = 200;
             res.locals.messages = mongoResult.messages;
             console.log('created a convo on line 30');
@@ -115,10 +74,6 @@ const ConversationController = {
       });
   },
 
-<<<<<<< HEAD
-  getAllConvosForAUser(req, res, next) {
-    const { username } = req.body;
-=======
   getAllConvosForAUser (req, res, next) {
     const { username } = req.body; 
     Conversation.find({participants: { name: username } })
@@ -140,7 +95,6 @@ const ConversationController = {
 
 
 
->>>>>>> 1d7211839957778975f3723e8386092b7708fd2a
 
     Conversation.find({ participants: { name: username } }).then(
       (mongoResult) => {
