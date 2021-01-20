@@ -20,7 +20,7 @@ Socket Helper Functions
     directMessage['recipient'] = recipient;
     directMessage['text'] = text;
     directMessage['timestamp'] = dateInSeconds;
-    clientSocket.emit( 'directMessage', JSON.stringify(directMessage));
+    clientSocket.emit( 'directMessage', directMessage);
   } 
 
 
