@@ -58,7 +58,7 @@ const userReducer = (state = initialState, action) => {
 
     const activeChat = action.payload.response;
     const activeRecipient = action.payload.recipient;
-    console.log(activeRecipient);
+
     return {
       ...state,
       activeChat,

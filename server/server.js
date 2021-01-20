@@ -15,6 +15,11 @@ app.use('/build', express.static(path.join(__dirname, '../build')));
 app.use(express.json());
 app.use(cors())
 
+
+// app.use('/', (req, res) => {
+//   res.status(200).sendFile(path.resolve(__dirname, '../client/index.html'));
+// });
+
 app.get('/dashboard', (req, res) => {
   res.status(200).sendFile(path.resolve(__dirname, '../client/index.html'));
 });
@@ -68,8 +73,8 @@ const Conversation = models.Conversation;
 
 socket.on('connection', (uniqueClientConnect) => {
   console.log('new user connected')
-  uniqueClientConnect.on('connected', (data)=>{
-    console.log(data);
+  uniqueClientConnect.on('connected', (data) =>{
+    console.log('SOCKETID-->', uniqueClientConnect.id);
   })
   
   //---------------listeners---------------
@@ -84,9 +89,11 @@ socket.on('connection', (uniqueClientConnect) => {
   // listen for directMessages
   uniqueClientConnect.on('directMessage', (dirtyMessageObj) => {
     console.log('inside DIRTY server message obj = ', dirtyMessageObj)
-    let messageObj = JSON.parse(dirtyMessageObj);
+    //let messageObj = JSON.parse(dirtyMessageObj);
+    let messageObj = dirtyMessageObj;
     
     const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
+   
     let recipientSocketId = socketIdPhoneBook[recipient]; //socket it for recipient
 
     const secret = 'tacos'

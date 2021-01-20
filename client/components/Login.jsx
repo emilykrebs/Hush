@@ -12,6 +12,8 @@ import socketIOClient from 'socket.io-client';
  */
 
 const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeRecipient }) => {
+  // login, signup, setClientSocket, addNewMessage are event handlers
+  // history, activeRecipient
 
   /**
    * Socket handler functions
@@ -20,11 +22,12 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
 
   let clientSocket;
 
+
   // initial socket connection
   const connectToSocket = () => {
     clientSocket = io.connect();
     setClientSocket(clientSocket);
-    clientSocket.emit('connected', 'INITIAL CONNECTION !!@!@!@!!!@!@!@!@!@');
+    clientSocket.emit('connected', 'CONNECTED');
   };
 
   // add user to 'phonebook' in websocket server
@@ -37,6 +40,7 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
     clientSocket.on('outGoingDM', (incomingMessage) => {
       let incomingMessageObj = JSON.parse(incomingMessage);
       console.log('sender:', incomingMessageObj.sender, 'activeRecipient:', activeRecipient);
+      // 
       // if (incomingMessageObj.sender === activeRecipient) addNewMessage(incomingMessageObj);
       //up to front end how they want to render that message ...
       addNewMessage(incomingMessageObj);
@@ -102,15 +106,14 @@ const Login = ({ login, signup, history, setClientSocket, addNewMessage, activeR
 
     (async () => {
       try {
-        console.log('email', email);
         const request = await fetch('/user/verify', requestOptions);
         const status = request.status;
         const response = await request.json();
         if (response.verified) {
           // Set state in redux store to logged in
-          console.log(email.value);
           login(email.value);
           connectToSocket();
+          console.log('confirm email after socket connection', email.value)
           defineMe(email.value);
           listenForMessage();
           history.push('/dashboard');

@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 
 //mongoose ---------
 
-const MONGO_URI = 'mongodb+srv://hello-hush:bluetooth@cluster0.5t5s3.mongodb.net/mainDB?retryWrites=true&w=majority'
+const MONGO_URI = require('./database.js');
 
 mongoose.connect(MONGO_URI, {
   // options for the connect method to parse the URI
   useNewUrlParser: true,
   useUnifiedTopology: true,
   // sets the name of the DB that our collections are part of
-  dbName: 'mainDB'
+  dbName: 'hush'
 })
   .then(() => console.log('Connected to Mongo DB.'))
   .catch(err => console.log(err));
