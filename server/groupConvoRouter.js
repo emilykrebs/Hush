@@ -1,7 +1,7 @@
 const express = require('express');
-const conversationController = require('./conversationController')
+const groupConvoController = require('./groupConvoController')
 
-const conversationRouter = express.Router();
+const groupConvoRouter = express.Router();
 
 
 // Create a conversation in the database
@@ -9,18 +9,21 @@ const conversationRouter = express.Router();
 
 // Get a conversation from the database
 // localhost://3000/conversation/"username"
-conversationRouter.post('/convo',
-  conversationController.findConversation,
+
+//test dummy
+groupConvoRouter.post('/groupconvo',
+groupConvoController.findGroupConversation,
   (req, res) => {
     res.status(res.locals.status).json({cid: res.locals.convoId, conversation: res.locals.messages});
   });
 
-conversationRouter.post('/userconvos',
-  conversationController.getAllConvosForAUser,
+  groupConvoRouter.post('/groupuserconvos',
+  groupConvoController.getAllGroupConvosForAUser,
   (req, res) => {
     res.status(res.locals.status).json({conversations : res.locals.conversations});
   });
 
+  
 
 // Append to a conversation
 // localhost://3000/conversation/"username"
@@ -28,4 +31,4 @@ conversationRouter.post('/userconvos',
 // Delete a conversation
 // localhost://3000/conversation/"name"
 
-module.exports = conversationRouter;
+module.exports = groupConvoRouter;
