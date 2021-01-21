@@ -9,6 +9,7 @@ const CryptoJS = require("crypto-js");
 const userRouter = require('./userRouter');
 const conversationRouter = require('./conversationRouter');
 const groupConvoRouter = require('./groupConvoRouter');
+const { io } = require('socket.io-client');
 
 const PORT = 3000;
 
@@ -39,6 +40,7 @@ app.use('/user', userRouter);
 //Conversation router ---------
 app.use('/chat', conversationRouter);
 
+// Groupchat router ----------
 app.use('/groupchat', groupConvoRouter);
 /**
  * Global error handler
@@ -73,6 +75,7 @@ by default our client will emit a "defineClient" event that will carry with it a
 //operator 
 
 const socketIdPhoneBook = {};
+const roomIdPhoneBook = {};
 const Conversation = models.Conversation;
 
 socket.on('connection', (uniqueClientConnect) => {
@@ -91,21 +94,51 @@ socket.on('connection', (uniqueClientConnect) => {
   });
 
   
+  uniqueClientConnect.on('groupDirectMessage', (messageObj) => {
+
+    const { cid, sender, recipient, text, timestamp} = messageObj;
+
+    const secret = 'tacos'
+    let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();
+    
+    const newMessage = {
+      sender,
+      recipient,
+      'text' : ciphertext,
+      timestamp
+    };
+
+    Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
+    .then((conversation) => {
+      console.log('conversation was updated in db!', conversation);
+    })
+    .catch(err => {
+      console.log(`Error updating groupConversation: ${err}`)
+    })
+    // if (roomIdPhoneBook[cid]) {
+    //   io.to(cid).emit('outGoingDM', newMessage);
+    // } else {
+  
+    //   roomIdPhoneBook[cid] = true;
+
+    //   uniqueClientConnect.id.join(cid);
+    //   recipient.forEach(person => {
+    //     socketIdPhoneBook[person].join(cid);
+    //   }) 
+
+    // }
+
+      //socket it for recipient
+
+  });
 
 
   // listen for directMessages
-  uniqueClientConnect.on('directMessage', (dirtyMessageObj) => {
-    console.log('inside DIRTY server message obj = ', dirtyMessageObj)
-    //let messageObj = JSON.parse(dirtyMessageObj);
-    let messageObj = dirtyMessageObj;
-    
+  uniqueClientConnect.on('directMessage', (messageObj) => {
+
     const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
     
-    let recipientSocketId = [];
-     recipient.forEach(person => {
-       recpientSocketId.push(socketIdPhoneBook[person]);
-      })   //socket it for recipient
-
+    const recipientSocketId = socketIdPhoneBook[recipient[0]];
 
     const secret = 'tacos'
     let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();

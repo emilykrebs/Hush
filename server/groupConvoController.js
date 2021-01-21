@@ -69,6 +69,7 @@ const GroupConversationController = {
             conversations.push(convo);
           };
         });
+        console.log(conversations, 'conversations fetched in database')
         res.locals.conversations = conversations;
         res.locals.status = 200;
         return next();

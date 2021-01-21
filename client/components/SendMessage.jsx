@@ -14,13 +14,16 @@ Socket Helper Functions
     let dateInSeconds = Date.parse(date);
     let directMessage = {};
 
+    let emitMessage = 'directMessage';
+    if (recipient.length > 1) emitMessage = 'groupDirectMessage'
+    
     //building the message below
     directMessage['cid'] = cid;
     directMessage['sender'] = sender;
     directMessage['recipient'] = recipient;
     directMessage['text'] = text;
     directMessage['timestamp'] = dateInSeconds;
-    clientSocket.emit( 'directMessage', directMessage);
+    clientSocket.emit(emitMessage, directMessage);
   } 
 
 
