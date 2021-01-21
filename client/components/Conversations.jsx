@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import GroupSearchBar from './GroupSearchBar.jsx';
 
 /**
  * Renders active conversations to sidepanel
  */
 
 const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email, 
-                        activeGroupConversations, setActiveGroupConversations, activeChat }) => {
+                        activeGroupConversations, setActiveGroupConversations, activeChat, open, handleClick }) => {
 
   /**
    * Set state
@@ -15,7 +16,6 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
    */
   const [directOpen, setDirectOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
-  const [newGroup, setNewGroup] = useState(false);
   const [conversationSelected, setConversationSelected] = useState(false);
  
 
@@ -134,11 +134,6 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
    })    
   }
 
-  const handleNewGroupClick = (e) => {
-    if (newGroup) setNewGroup(false);
-    else setNewGroup(true);
-  }
-
 
   return (
     <Container>
@@ -182,14 +177,6 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
             </Group>
           ))}
         </InnerList>
-        <li>
-          <NewGroup onClick={(e) => handleNewGroupClick(e)}>
-             New Group Chat
-          </NewGroup>
-        </li>
-        <InnerList open={newGroup}>
-          <input type='text' placeholder='Search users...'  width='70%'/>
-        </InnerList>
       </Ul>
     </Container>
   );
@@ -201,11 +188,11 @@ export default Conversations;
  * Styled Components
  */
 const Container = styled.div`
-  height: 65%;
+  height: 40%;
   margin-top: -1rem;
   z-index: 2;
   font-family: 'Josefin Sans', sans-serif;
-  overflow: hidden;
+  overflow: scroll;
 `;
 const Ul = styled.ul`
   height: fit-content;
@@ -255,27 +242,9 @@ const Group = styled(Direct)`
 
 `;
 
-const NewGroup = styled(DirectCaret)`
-
-`;
-
 const Header = styled.h3`
   height: fit-content;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
-`;
-
-const GroupChat = styled.li`
-  z-index: 0;
-  cursor: pointer;
-  user-select: none;
-
-  &:before {
-    font-family: times-new-roman;
-    content: "\\005E";
-    color: black;
-    display: inline-block;
-    padding: .5rem;
-  }
 `;

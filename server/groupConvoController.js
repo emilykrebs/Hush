@@ -2,16 +2,6 @@ const models = require('./models'); //models.User //models.Conversation
 const Conversation = models.Conversation;
 const mongoose = require('mongoose');
 
-const checker = (arr1, arr2) => {
-  for (let i = 0; i < arr1.length; i += 1) {
-    for (let key in arr1[i]) {
-      if (arr1[i][key] !== arr2[i][key]) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
 
 const GroupConversationController = {
 
@@ -19,11 +9,14 @@ const GroupConversationController = {
    //here we will be getting an object with {sender: 'Matt', recipiant: 'Ross', etc, etc??}
    // still have front end send sender object 
    const {sender, recipients} = req.body;
-   const participants = [{name: sender}];
-
+   //const participants = [{name: sender}];
+   const participants = [];
+   recipients.push(sender);
+   recipients.sort()
    recipients.map((participant) => {
       participants.push({name: participant})
    });
+
    
    Conversation.findOne({ participants : participants }) //returns an array with all group convos user has
    .then(allGroupConvosWithSender => {
