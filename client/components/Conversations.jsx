@@ -6,7 +6,7 @@ import styled from 'styled-components';
  */
 
 const Conversations = ({ setActiveChat, activeConversations, setActiveConversations, email, 
-                        activeGroupConversations, setActiveGroupConversations }) => {
+                        activeGroupConversations, setActiveGroupConversations, activeChat }) => {
 
   /**
    * Set state
@@ -126,16 +126,36 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         sender: email,
-        recipient: e.target.innerText
+        recipients: ['emily@emily.com', 'eric@eric.com']
       })
     };
-    console.log('HANDLE GROUP USER CLICK')
+
+    fetch('/groupchat/groupconvo', requestOptions)
+    .then(res => res.json())
+    .then(response => {
+      setActiveChat({ response: response, recipient: ['emily@emily.com', 'eric@eric.com'] })
+      console.log('ACTIVE GROUP CHAT SET IN CONVERSATIONS!!!!', activeChat)
+    })
+   .catch(err => {
+     console.log(`Error in Conversations:HandleGroupClick: ${err}`)
+   })
+    
   }
 
   const handleNewGroupClick = (e) => {
     if (newGroup) setNewGroup(false);
     else setNewGroup(true);
   }
+
+  //  {activeGroupConversations.map((user, i) => (
+  //   <Group
+  //   key={`${user}${i}`}
+  //   email={user}
+  //   onClick={(e) => handleGroupUserClick(e)}
+  //   >
+  //   </Group>
+  // ))}
+
 
   return (
     <Container>
@@ -169,14 +189,7 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
           </GroupCaret>
         </li>
         <InnerList open={groupOpen} >
-          {activeGroupConversations.map((user, i) => (
-            <Group
-            key={`${user}${i}`}
-            email={user}
-            onClick={(e) => handleGroupUserClick(e)}
-            >
-            </Group>
-          ))}
+          <Group onClick={(e) => handleGroupUserClick(e)}> User Group </Group>
         </InnerList>
         <li>
           <NewGroup onClick={(e) => handleNewGroupClick(e)}>

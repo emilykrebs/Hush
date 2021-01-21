@@ -90,6 +90,9 @@ socket.on('connection', (uniqueClientConnect) => {
     
   });
 
+  
+
+
   // listen for directMessages
   uniqueClientConnect.on('directMessage', (dirtyMessageObj) => {
     console.log('inside DIRTY server message obj = ', dirtyMessageObj)
@@ -97,8 +100,12 @@ socket.on('connection', (uniqueClientConnect) => {
     let messageObj = dirtyMessageObj;
     
     const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
-   
-    let recipientSocketId = socketIdPhoneBook[recipient]; //socket it for recipient
+    
+    let recipientSocketId = [];
+     recipient.forEach(person => {
+       recpientSocketId.push(socketIdPhoneBook[person]);
+      })   //socket it for recipient
+
 
     const secret = 'tacos'
     let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();
@@ -120,7 +127,10 @@ socket.on('connection', (uniqueClientConnect) => {
     } else {//there is a live socket to route to
       Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
       .then( () => {
-        uniqueClientConnect.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
+        // uniqueClientConnect.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
+        recipientSocketId.forEach(socketId => {
+          uniqueClientConnect.to(socketId).emit('outGoingDM', JSON.stringify(newMessage));
+        })
       })
     }
   })
