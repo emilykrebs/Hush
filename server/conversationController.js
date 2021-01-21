@@ -7,8 +7,15 @@ const ConversationController = {
   findConversation (req, res, next) {
   
    const { sender, recipient } = req.body;
+  //  [{ name : sender}, { name: recipient }]
+  const participants = [sender, recipient]
+  participants.sort();
+  const test = [];
+  participants.forEach(person => {
+    test.push({name: person})
+  })
    
-   Conversation.findOne({ participants: [{ name : sender}, { name: recipient }] }) //returns an array with all group convos user has
+   Conversation.findOne({ participants: test }) //returns an array with all group convos user has
    .then(allConvosWithSender => {
         console.log(allConvosWithSender, 'ALL GROUP CONVOS')
         if (allConvosWithSender) {
@@ -17,7 +24,7 @@ const ConversationController = {
           res.locals.messages = allConvosWithSender.messages;
           return next();
         } else {
-         Conversation.create({_id: mongoose.Types.ObjectId() , participants: [{ name : sender}, { name: recipient }], messages: []})
+         Conversation.create({_id: mongoose.Types.ObjectId() , participants: test, messages: []})
          .then((mongoResult) => {
              //should return us back an obj = {_id: 24vergverb, participants: [], messages: []}
              res.locals.convoId = mongoResult._id;

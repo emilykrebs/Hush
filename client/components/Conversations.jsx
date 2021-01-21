@@ -103,7 +103,6 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       (async () => {
         const request = await fetch('/chat/convo', requestOptions);
         const response = await request.json();
-        console.log
         // setActiveChat action updates state with currently selected user chat log
         setActiveChat({ response: response, recipient: e.target.innerText });
       })();

@@ -138,7 +138,7 @@ socket.on('connection', (uniqueClientConnect) => {
 
     const { cid, sender, recipient, text, timestamp} = messageObj; //from client -> server
     
-    const recipientSocketId = socketIdPhoneBook[recipient[0]];
+    const recipientSocketId = socketIdPhoneBook[recipient];
 
     const secret = 'tacos'
     let ciphertext = CryptoJS.AES.encrypt(text, secret).toString();
@@ -160,10 +160,7 @@ socket.on('connection', (uniqueClientConnect) => {
     } else {//there is a live socket to route to
       Conversation.findOneAndUpdate({_id: cid}, { $push: {messages: newMessage}}, {new: true})
       .then( () => {
-        // uniqueClientConnect.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
-        recipientSocketId.forEach(socketId => {
-          uniqueClientConnect.to(socketId).emit('outGoingDM', JSON.stringify(newMessage));
-        })
+          uniqueClientConnect.to(recipientSocketId).emit('outGoingDM', JSON.stringify(newMessage));
       })
     }
   })
