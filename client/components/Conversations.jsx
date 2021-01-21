@@ -40,10 +40,8 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       fetch('/chat/userconvos', requestOptions)
       .then(res => res.json())
       .then(response => {
-        console.log(response.conversations, 'BASIC RESPONSE')
         const allActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
         const filteredActiveConvos = [];
-        console.log('ALL ACTIVE CONVOS', allActiveConvos)
         allActiveConvos.forEach(convo => {
           if (!filteredActiveConvos.includes(convo[0].name) && convo[0].name) {
             filteredActiveConvos.push(convo[0].name);
@@ -54,7 +52,7 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       .catch(err => {
         console.log(`There was an error: ${err}`)
       })
-    }
+    };
   };
 
   // Handles click of group caret &
@@ -68,22 +66,16 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: email, recipients: ['ericpeng@eric.com', 'g@rrett.com' ] })
+        body: JSON.stringify({ username: email })
       };
 
-      fetch('/groupchat/groupconvo', requestOptions)
+      fetch('/groupchat/groupuserconvos', requestOptions)
       .then(res => res.json())
       .then(response => {
-        console.log(response.conversation, 'BASIC RESPONSE')
-        // const allGroupActiveConvos = response.conversations.map(convo => convo.participants.filter(user => user.name !== email));
-        // const filteredGroupActiveConvos = [];
-        // allGroupActiveConvos.forEach(convo => {
-        //   if (!filteredGroupActiveConvos.includes(convo[0].name) && convo[0].name) {
-        //     filteredGroupActiveConvos.push(convo[0].name);
-        //   }
+        const filteredParticipants = response.conversations.map(convo => convo.participants.filter(person => person.name !== email))
+        const filteredEmails = filteredParticipants.map(convo => convo.map(person => person = person.name).join(' '))
+        setActiveGroupConversations(filteredEmails)
         })
-        // setActiveGroupConversations(filteredGroupActiveConvos);   
-      // })
       .catch(err => {
         console.log(`There was an error: ${err}`)
       })
@@ -121,40 +113,31 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
   };
 
   const handleGroupUserClick = (e) => {
+    const recipients = e.target.innerText.split(' ')
+
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         sender: email,
-        recipients: ['emily@emily.com', 'eric@eric.com']
+        recipients: recipients
       })
     };
 
     fetch('/groupchat/groupconvo', requestOptions)
     .then(res => res.json())
     .then(response => {
-      setActiveChat({ response: response, recipient: ['emily@emily.com', 'eric@eric.com'] })
-      console.log('ACTIVE GROUP CHAT SET IN CONVERSATIONS!!!!', activeChat)
+      setActiveChat({ response: response, recipient: recipients})
     })
    .catch(err => {
      console.log(`Error in Conversations:HandleGroupClick: ${err}`)
-   })
-    
+   })    
   }
 
   const handleNewGroupClick = (e) => {
     if (newGroup) setNewGroup(false);
     else setNewGroup(true);
   }
-
-  //  {activeGroupConversations.map((user, i) => (
-  //   <Group
-  //   key={`${user}${i}`}
-  //   email={user}
-  //   onClick={(e) => handleGroupUserClick(e)}
-  //   >
-  //   </Group>
-  // ))}
 
 
   return (
@@ -189,7 +172,15 @@ const Conversations = ({ setActiveChat, activeConversations, setActiveConversati
           </GroupCaret>
         </li>
         <InnerList open={groupOpen} >
-          <Group onClick={(e) => handleGroupUserClick(e)}> User Group </Group>
+          {activeGroupConversations.map((group, i) => (
+            <Group 
+              key={`${group}${i}`}
+              email={group}
+              onClick={(e) => handleGroupUserClick(e)}
+            >
+              {group}
+            </Group>
+          ))}
         </InnerList>
         <li>
           <NewGroup onClick={(e) => handleNewGroupClick(e)}>
