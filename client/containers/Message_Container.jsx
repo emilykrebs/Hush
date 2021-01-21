@@ -15,6 +15,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export const Message_Container = connect(state => ({
+  activeGroupChat: state.user.activeGroupChat,
   activeChat: state.user.activeChat,
   email: state.user.email,
   activeRecipient: state.user.activeRecipient,

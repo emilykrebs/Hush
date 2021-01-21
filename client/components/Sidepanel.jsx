@@ -36,6 +36,7 @@ const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setA
         email={email} 
       />
       <Conversations 
+        activeChat={activeChat}
         email={email} 
         activesLoaded={activesLoaded} 
         setActivesLoaded={setActivesLoaded} 
