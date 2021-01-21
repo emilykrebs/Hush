@@ -30,10 +30,12 @@ const Dashboard = ({ activesLoaded, setActivesLoaded, setActiveConversations, ac
     logout();
   };
 
+  let displayName;
+  Array.isArray(activeRecipient) ? displayName = 'Group Chat' : displayName = activeRecipient;
+
   return (
     <Container>
-
-      <Recipient>{activeRecipient}</Recipient>
+      <Recipient>{displayName}</Recipient>
       <Logout_Btn onClick={(e) => handleLogout(e)} >Logout</Logout_Btn>
       <SidePanelContainer
         email={email}

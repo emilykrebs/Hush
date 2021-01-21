@@ -69,12 +69,6 @@ const GroupConversationController = {
       }
     })
   }
-
 }
-
-
-
-
-
 
 module.exports = GroupConversationController;

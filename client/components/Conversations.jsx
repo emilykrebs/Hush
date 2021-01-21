@@ -188,7 +188,7 @@ export default Conversations;
  * Styled Components
  */
 const Container = styled.div`
-  height: 40%;
+  height: 30%;
   margin-top: -1rem;
   z-index: 2;
   font-family: 'Josefin Sans', sans-serif;

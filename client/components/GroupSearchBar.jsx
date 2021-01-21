@@ -109,7 +109,7 @@ const GroupSearchBar = ({ activeGroupConversations, setActiveGroupConversations,
 
   return (
     <Container onClick={(e) => handleClick(e)}>
-      <h4>New Group Chat</h4>
+      <Header>New Group Chat</Header>
       <Input
         id='groupInput'
         type='text'
@@ -131,8 +131,16 @@ const GroupSearchBar = ({ activeGroupConversations, setActiveGroupConversations,
           ))}
         </ul>
       </Results>
-      <button onClick={handleNewGroup}>Start Chat</button>
-      <h3>{groupChat}</h3>
+      <Button onClick={handleNewGroup}>Start Chat</Button>
+      <div>
+      {groupChat.map((item, i) => (
+        <GroupPerson 
+          key={`${item}${i}`}
+        >
+          {item}
+        </GroupPerson>
+      ))}
+      </div>
     </Container>
   );
 };
@@ -146,12 +154,30 @@ export default GroupSearchBar;
 
 
 const Container = styled.div`
-    height: 45%;
+    height: 62%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    paddingTop: 100px;
-    paddingBottom:100px;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Josefin Sans', sans-serif;
+    padding-bottom: 100px;
+ `;
+
+ const Button = styled.button`
+    font-family: 'Josefin Sans', sans-serif;
+    border-radius: 5%;
+    border: none;
+    background-color: #ebabc4;
+    cursor: pointer;
+    color: white;
+    height: 70px;
+    width: 100px;
+    margin-bottom: 10px;
+
+    &:hover {
+      box-shadow: 1px 1px 1px lightgrey;
+      background-color: #e892b4;
+    }
  `;
 
 const Input = styled.input`
@@ -163,14 +189,21 @@ const Input = styled.input`
   text-indent: .5rem;
   margin-left: 1rem;
   flex-shrink: 0;
-  marginBottom: 100px;
+  margin-bottom: 20px;
+`;
+
+const GroupPerson = styled.h4`
+  text-indent: 1rem;
+  margin-left: 1rem;
+  margin-bottom: 0px;
+  height: 30%;
 `;
 
 const Results = styled.div`
   postition: absolute;
   top: 0;
   left: 0;
-  height: fit-content;  
+  height: 250%;
   width: 70%;
   overflow-y: scroll;
   border: 1px solid #616161;
@@ -178,7 +211,7 @@ const Results = styled.div`
   border-top: none;
   display: ${props => props.open ? 'block' : 'none'};
   scrollbar-width: none;
-  z-index: 5;
+  z-index: 25;
   margin-left: 1rem;
   background-color: white;
 
@@ -199,4 +232,11 @@ const User = styled.li`
       
       cursor: pointer;
     }
+`;
+
+const Header = styled.h3`
+  height: fit-content;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
 `;
