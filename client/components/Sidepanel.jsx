@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Conversations from './Conversations.jsx';
+import GroupSearchBar from './GroupSearchBar.jsx';
 import SearchBar from './SearchBar.jsx';
 import UserDetails from './UserDetails.jsx';
 
@@ -35,7 +36,7 @@ const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setA
         activeConversations={activeConversations} 
         email={email} 
       />
-      <Conversations 
+      <Conversations
         activeChat={activeChat}
         email={email} 
         activesLoaded={activesLoaded} 
@@ -45,6 +46,13 @@ const Sidepanel = ({ activesLoaded, setActivesLoaded, email, setActiveChat, setA
         activeConversations={activeConversations}
         activeGroupConversations={activeGroupConversations}
         setActiveGroupConversations={setActiveGroupConversations} 
+      />
+      <GroupSearchBar 
+        activeGroupConversations={activeGroupConversations}
+        setActiveGroupConversations={setActiveGroupConversations}
+        email={email}
+        setActiveChat={setActiveChat}
+        activeConversations={activeConversations}
       />
     </Container>
   );
